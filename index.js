@@ -1,28 +1,37 @@
+//Task 1: Execution order Test
+//Goal: Understand middleware order
+//Steps:
+// 1. Create 3 middlewares:
+//app.use((req,res,next)=>{ console.log("Middleware 1"); next(); });
+//app.use((req,res,next)=>{ console.log("Middleware 2"); next(); });
+//app.use((req,res,next)=>{ console.log("Middleware 3"); next(); });
+
 const express = require("express");
 const app = express();
 
-//Middelware functions
-const myMiddleware = (req, res, next)=> {
-    console.log("Middleware executed")
-    next(); //move to next step (next middleware or route)
-};
-
-//use middleware
-app.use(myMiddleware);
-
+// Middleware 1
 app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-})
-
-//simple route
-app.get("/", (req, res)=> {
-    res.send("Home Page");
+  console.log("Middleware 1");
+  next(); // pass control to the next middleware
 });
 
-app.get("/about", (req,res) => {
-    res.send("About Page"); 
+// Middleware 2
+app.use((req, res, next) => {
+  console.log("Middleware 2");
+  next();
 });
 
+// Middleware 3
+app.use((req, res, next) => {
+  console.log("Middleware 3");
+  next();
+});
 
-app.listen(8000, () => console.log("server is running"))
+// Route handler
+app.get("/", (req, res) => {
+  res.send("Hello from route!");
+});
+
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+});
