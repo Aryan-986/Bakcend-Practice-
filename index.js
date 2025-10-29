@@ -1,37 +1,45 @@
-//Task 1: Execution order Test
-//Goal: Understand middleware order
-//Steps:
-// 1. Create 3 middlewares:
-//app.use((req,res,next)=>{ console.log("Middleware 1"); next(); });
-//app.use((req,res,next)=>{ console.log("Middleware 2"); next(); });
-//app.use((req,res,next)=>{ console.log("Middleware 3"); next(); });
-
 const express = require("express");
-const app = express();
+const app = express ();
 
-// Middleware 1
-app.use((req, res, next) => {
-  console.log("Middleware 1");
-  next(); // pass control to the next middleware
-});
+const checkUser = (req, res, next) => {
+  console.log("Route specific middleware running....")
+  next (); //Move to next function (the route handler)
+};
 
-// Middleware 2
-app.use((req, res, next) => {
-  console.log("Middleware 2");
+//specefic routing implementation
+app.get("/profile", checkUser,(req, res)=> {
+  res.send("user profile page")
+})
+
+//Middleware 1
+app.use((req,res,next)=> {
+  console.log("Middleware 1 Executed");
   next();
 });
 
-// Middleware 3
-app.use((req, res, next) => {
-  console.log("Middleware 3");
+//middleware 2
+app.use((req,res,next)=> {
+  console.log("Middleware 2 is executed")
   next();
 });
 
-// Route handler
-app.get("/", (req, res) => {
-  res.send("Hello from route!");
-});
+//Middleware 3
+app.use((req,res,next)=> {
+  console.log("Middleware3 is executed");
+  next();
+})
 
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
-});
+//Route handler
+app.get("/", (req,res)=> {
+  res.send("Hello my name is aryan and this route")
+})
+
+app.listen(3000, ()=>{
+  console.log("server is runnig on 3000 port")
+})
+
+//specific route middleware unlike app.use (which applies for every route) a route 
+//specific middleware runs only for the route where it is attached. we attach directly inside a route defination like this
+//app.get("/profile", checkUser, (req, res) => {
+ // res.send("User Profile Page");
+//});
