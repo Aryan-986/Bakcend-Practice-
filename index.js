@@ -1,17 +1,20 @@
-const express = require("express");
-const app = express ();
+const express = require ("express");
+const app = express();
 
 //Global middleware for logging request time 
-app.use((req,res,next)=> {
-  
+app.use((req,res,next)=>{
+    console.log(`Request received at: ${new Date(). toLocaleTimeString()}`)
+    next(); //contribute to the next middleware or route
+});
+
+app.get("/",(req,res)=> {
+    res.send("Home Page")
 })
 
-app.listen(3000, ()=>{
-  console.log("server is runnig on 3000 port")
-})
+app.get("/about", (req,res)=> {
+    res.send("About page")
+});
 
-//specific route middleware unlike app.use (which applies for every route) a route 
-//specific middleware runs only for the route where it is attached. we attach directly inside a route defination like this
-//app.get("/profile", checkUser, (req, res) => {
- // res.send("User Profile Page");
-//});
+app.listen(3000,()=> {
+    console.log("Server running on port 3000")
+})
