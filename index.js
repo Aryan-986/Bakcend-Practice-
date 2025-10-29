@@ -1,20 +1,32 @@
-const express = require ("express");
+const express = require("express");
 const app = express();
 
-//Global middleware for logging request time 
-app.use((req,res,next)=>{
-    console.log(`Request received at: ${new Date(). toLocaleTimeString()}`)
-    next(); //contribute to the next middleware or route
+// 🔹 Middleware: Simple Authentication Check
+const checkAuth = (req, res, next) => {
+  if (req.query.password === "1234") {
+    console.log("✅ Auth success");
+    next(); // allow access to the route
+  } else {
+    console.log("❌ Auth failed");
+    res.send("Access Denied");
+  }
+};
+
+// 🔸 Protected route
+app.get("/admin", checkAuth, (req, res) => {
+  res.send("Welcome Admin!");
 });
 
-app.get("/",(req,res)=> {
-    res.send("Home Page")
-})
-
-app.get("/about", (req,res)=> {
-    res.send("About page")
+// 🔸 Public route
+app.get("/", (req, res) => {
+  res.send("Public Home Page");
 });
 
-app.listen(3000,()=> {
-    console.log("Server running on port 3000")
-})
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+});
+
+//What is actually happening here
+//Middleware can decide whether a route executes or not
+//if the condition fails, we can stop the chain dont call next()
+//you can also send a custom message .
